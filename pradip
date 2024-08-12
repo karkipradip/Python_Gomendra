@@ -1,0 +1,73 @@
+import os
+from datetime import datetime
+
+def get_current_date_filename():
+    """Returns the current date formatted as YYYY-MM-DD.txt."""
+    return datetime.now().strftime("%Y-%m-%d") + ".txt"
+
+def write_to_file(filename, content):
+    """Writes the given content to the specified filename."""
+    with open(filename, 'w') as file:
+        file.write(content)
+
+def read_from_file(filename):
+    """Reads and returns the content of the specified filename."""
+    with open(filename, 'r') as file:
+        return file.read()
+
+def list_journal_files():
+    """Returns a list of all .txt files in the current directory."""
+    return [f for f in os.listdir() if f.endswith(".txt")]
+
+def create_journal_entry():
+    """Prompts the user for a journal entry and saves it to a dated file."""
+    filename = get_current_date_filename()
+    entry = input(f"Write your journal entry for {filename}:\n")
+    write_to_file(filename, entry)
+    print(f"Journal entry saved as {filename}")
+
+def read_journal_entry():
+    """Lists all journal entries and prompts the user to select one to read."""
+    files = list_journal_files()
+    
+    if not files:
+        print("No journal entries found.")
+        return
+    
+    print("Available journal entries:")
+    for idx, file in enumerate(files):
+        print(f"{idx + 1}. {file}")
+    
+    try:
+        choice = int(input("Enter the number of the journal entry you want to read: ")) - 1
+        if 0 <= choice < len(files):
+            content = read_from_file(files[choice])
+            print(f"\n--- Journal entry for {files[choice]} ---")
+            print(content)
+        else:
+            print("Invalid choice.")
+    
+    except ValueError:
+        print("Invalid input. Please enter a number.")
+
+def main_menu():
+    """Displays the main menu and processes user choices."""
+    while True:
+        print("\nJournal Program")
+        print("1. Create a journal entry")
+        print("2. Read a previous entry")
+        print("3. Exit")
+        choice = input("Choose an option: ")
+        
+        if choice == '1':
+            create_journal_entry()
+        elif choice == '2':
+            read_journal_entry()
+        elif choice == '3':
+            print("Exiting program.")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main_menu()
